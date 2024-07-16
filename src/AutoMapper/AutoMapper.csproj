@@ -7,8 +7,23 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>Simple AutoMapper</Title>
     <Description>Simple classes AutoMapper which does not require any configuration to use</Description>
-    <PackageProjectUrl>https://github.com/Suzyklementy/simple-auto-mapper</PackageProjectUrl>
+    <PackageProjectUrl></PackageProjectUrl>
     <PackageId>SimpleAutoMapperSuzyklementy</PackageId>
+    <Version>1.1.2</Version>
+    <RepositoryUrl>https://github.com/Suzyklementy/simple-auto-mapper</RepositoryUrl>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="bin\Debug\readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

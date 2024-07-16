@@ -37,7 +37,7 @@ If some properties are present only in TOriginal they will be just ignored but, 
 
 ## License
 
-This project is open sorce and avaiable to use for everyone 
+This project is licensed under the terms of the [MIT license](./LICENSE).
 
 <br>
 
