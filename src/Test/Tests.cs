@@ -42,6 +42,32 @@ public class Tests
     }
 
     [Fact]
+    public void test_auto_mapper_try_map_method_should_succed()
+    {
+        var example = new Example()
+        {
+            Id = 1,
+            Name = "Test",
+            Description = "Test Description",
+            SecureData = "Secured Data",
+            Test = new TestValueObject("Test")
+        };
+
+        var exampleDto = AutoMapperService.TryMap<Example, ExampleDto>(example);
+
+        _testOutputHelper.WriteLine("ExampleDto properties values:");
+        _testOutputHelper.WriteLine($"Id: {exampleDto.Id}");
+        _testOutputHelper.WriteLine($"Name: {exampleDto.Name}");
+        _testOutputHelper.WriteLine($"Description: {exampleDto.Description}");
+        _testOutputHelper.WriteLine($"Test: {exampleDto.Test.Value}");
+
+        Assert.False(exampleDto.Id == 0);
+        Assert.NotNull(exampleDto.Name);
+        Assert.NotNull(exampleDto.Description);
+        Assert.NotNull(exampleDto.Test.Value);
+    }
+
+    [Fact]
     public void test_auto_mapper_map_with_value_objects_method_should_succed()
     {
         var example = new ExampleWithValueObject()

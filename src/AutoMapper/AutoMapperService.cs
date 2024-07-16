@@ -5,9 +5,9 @@ namespace AutoMapper;
 
 public static class AutoMapperService
 {
-    public static TTarget Map<TOriginal, TTarget>(TOriginal originalObject) 
-        where TTarget : new() 
+    public static TTarget Map<TOriginal, TTarget>(TOriginal originalObject)
         where TOriginal : new()
+        where TTarget : new() 
     {
         var originalProperties = typeof(TOriginal).GetProperties();
         var targetProperties = typeof(TTarget).GetProperties();
@@ -27,16 +27,45 @@ public static class AutoMapperService
                     var originalProperty = originalProperties[i];
                     var targetProperty = targetProperties[j];
 
-                    if (originalProperty.Name.ToLower() != targetProperty.Name.ToLower())
+                    if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
-                        continue;
+                        MapProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
                     }
-
-                    MapProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
                 }
                 catch(Exception e)
                 {
                     throw new AutoMapperException(typeof(TOriginal), typeof(TTarget), e.Message);
+                }
+            }
+        }
+
+        return mappedTarget;
+    }
+
+    public static TTarget TryMap<TOriginal, TTarget>(TOriginal originalObject)
+        where TTarget : new()
+        where TOriginal : new()
+    {
+        var originalProperties = typeof(TOriginal).GetProperties();
+        var targetProperties = typeof(TTarget).GetProperties();
+
+        TTarget mappedTarget = new();
+        for (int i = 0; i < originalProperties.Length; i++)
+        {
+            for (int j = 0; j < targetProperties.Length; j++)
+            {
+                try
+                {
+                    var originalProperty = originalProperties[i];
+                    var targetProperty = targetProperties[j];
+
+                    if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
+                    {
+                        MapProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
+                    }
+                }
+                catch
+                {
                 }
             }
         }
@@ -66,16 +95,45 @@ public static class AutoMapperService
                     var originalProperty = originalProperties[i];
                     var targetProperty = targetProperties[j];
 
-                    if (originalProperty.Name.ToLower() != targetProperty.Name.ToLower())
+                    if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
-                        continue;
+                        MapValueObjectProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
                     }
-
-                    MapValueObjectProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
                 }
                 catch (Exception e)
                 {
                     throw new AutoMapperException(typeof(TOriginal), typeof(TTarget), e.Message);
+                }
+            }
+        }
+
+        return mappedTarget;
+    }
+
+    public static TTarget TryMapWithValueObjects<TOriginal, TTarget>(TOriginal originalObject)
+       where TTarget : new()
+       where TOriginal : new()
+    {
+        var originalProperties = typeof(TOriginal).GetProperties();
+        var targetProperties = typeof(TTarget).GetProperties();
+
+        TTarget mappedTarget = new();
+        for (int i = 0; i < originalProperties.Length; i++)
+        {
+            for (int j = 0; j < targetProperties.Length; j++)
+            {
+                try
+                {
+                    var originalProperty = originalProperties[i];
+                    var targetProperty = targetProperties[j];
+
+                    if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
+                    {
+                        MapValueObjectProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
+                    }
+                }
+                catch
+                {
                 }
             }
         }
