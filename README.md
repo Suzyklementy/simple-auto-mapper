@@ -39,8 +39,6 @@ If some properties are present only in TOriginal they will be just ignored but, 
 
 This project is licensed under the terms of the [MIT license](./LICENSE).
 
-<br>
-
-# Documentation
+## Documentation
 
 More details about project and technical documentation [here](https://github.com/Suzyklementy/simple-auto-mapper/wiki).
