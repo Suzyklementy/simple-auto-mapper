@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using AutoMapper.Exceptions;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace AutoMapper;
@@ -26,6 +27,8 @@ public static class AutoMapperService
                 {
                     var originalProperty = originalProperties[i];
                     var targetProperty = targetProperties[j];
+
+                    MapUsingConfiguration(targetProperty, originalObject, ref mappedTarget);
 
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
@@ -58,6 +61,8 @@ public static class AutoMapperService
                 {
                     var originalProperty = originalProperties[i];
                     var targetProperty = targetProperties[j];
+
+                    MapUsingConfiguration(targetProperty, originalObject, ref mappedTarget);
 
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
@@ -95,6 +100,8 @@ public static class AutoMapperService
                     var originalProperty = originalProperties[i];
                     var targetProperty = targetProperties[j];
 
+                    MapUsingConfiguration(targetProperty, originalObject, ref mappedTarget);
+
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
                         MapValueObjectProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
@@ -126,6 +133,8 @@ public static class AutoMapperService
                 {
                     var originalProperty = originalProperties[i];
                     var targetProperty = targetProperties[j];
+
+                    MapUsingConfiguration(targetProperty, originalObject, ref mappedTarget);
 
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
@@ -192,6 +201,17 @@ public static class AutoMapperService
         {
             var convertedValue = valueObjectConverter.ConvertTo(property.GetValue(value), targetProperty.PropertyType);
             targetProperty.SetValue(mappedTarget, convertedValue);
+        }
+    }
+
+    private static void MapUsingConfiguration<TOriginal, TTarget>(PropertyInfo targetProperty, TOriginal originalObject ,ref TTarget mappedTarget)
+        where TOriginal : new()
+        where TTarget : new()
+    {
+        var customMap = AutoMapperConfiguration<TOriginal, TTarget>.Maps.FirstOrDefault(x => x.PropertyName == targetProperty.Name);
+        if (customMap is not null)
+        {
+            targetProperty.SetValue(mappedTarget, customMap.MapExpression(originalObject));
         }
     }
 }

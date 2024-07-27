@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Exceptions;
 using Test.DTO;
 using Test.Objects;
 using Test.ValueObjects;
@@ -6,11 +7,12 @@ using Xunit.Abstractions;
 
 namespace Test;
 
-public class Tests
+[Collection("Sequential")]
+public class TemporaryTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public Tests(ITestOutputHelper testOutputHelper)
+    public TemporaryTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
@@ -123,7 +125,7 @@ public class Tests
     }
 
     [Fact]
-    public void map_classes_without_properties_should_failed()
+    public void map_classes_without_properties_should_fail()
     {
         var example = new Example()
         {
@@ -137,5 +139,23 @@ public class Tests
         var action = () => AutoMapperService.Map<Example, ExampleWithoutProperties>(example);
 
         Assert.Throws<AutoMapperException>(action);
+    }
+
+    [Fact]
+    public void test_auto_mapper_configuration()
+    {
+        var example = new Example()
+        {
+            Id = 1,
+            Name = "Test",
+            Description = "Test Description",
+            SecureData = "Secured Data",
+            Test = new TestValueObject("Test")
+        };
+
+        AutoMapperConfiguration<Example, ExampleDto>.ConfigureMap(x => x.Name, x => "XD");
+        var exampleDto = AutoMapperService.Map<Example, ExampleDto>(example);
+
+        Console.WriteLine($"Description: {exampleDto.Description}");
     }
 }

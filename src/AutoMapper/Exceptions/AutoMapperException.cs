@@ -1,4 +1,4 @@
-﻿namespace AutoMapper;
+﻿namespace AutoMapper.Exceptions;
 
 public sealed class AutoMapperException : Exception
 {
