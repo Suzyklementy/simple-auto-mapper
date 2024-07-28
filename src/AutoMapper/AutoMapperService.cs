@@ -169,38 +169,38 @@ public static class AutoMapperService
 
     private static void MapValueObjectProperty<T>(PropertyInfo originalProperty, PropertyInfo targetProperty, object? value, ref T mappedTarget)
     {
-        if (originalProperty.PropertyType == targetProperty.PropertyType)
-        {
-            targetProperty.SetValue(mappedTarget, value);
-            return;
-        }
-
-        var converter = TypeDescriptor.GetConverter(originalProperty.PropertyType);
-        if (converter.CanConvertTo(targetProperty.PropertyType))
-        {
-            var convertedValue = converter.ConvertTo(value, targetProperty.PropertyType);
-            targetProperty.SetValue(mappedTarget, convertedValue);
-            return;
-        }
-
         var valueObjectProperties = originalProperty.PropertyType.GetProperties();
-        if (valueObjectProperties.Length != 1 || value is null)
+        if (valueObjectProperties.Length == 1 && value is not null)
         {
-            return;
-        }
+            var property = valueObjectProperties[0];
+            if (property.PropertyType == targetProperty.PropertyType)
+            {
+                targetProperty.SetValue(mappedTarget, property.GetValue(value));
+                return;
+            }
 
-        var property = valueObjectProperties[0];
-        if (property.PropertyType == targetProperty.PropertyType)
-        {
-            targetProperty.SetValue(mappedTarget, property.GetValue(value));
-            return;
+            var valueObjectConverter = TypeDescriptor.GetConverter(property);
+            if (valueObjectConverter.CanConvertTo(targetProperty.PropertyType))
+            {
+                var convertedValue = valueObjectConverter.ConvertTo(property.GetValue(value), targetProperty.PropertyType);
+                targetProperty.SetValue(mappedTarget, convertedValue);
+                return;
+            }
         }
-
-        var valueObjectConverter = TypeDescriptor.GetConverter(property);
-        if (valueObjectConverter.CanConvertTo(targetProperty.PropertyType))
+        else
         {
-            var convertedValue = valueObjectConverter.ConvertTo(property.GetValue(value), targetProperty.PropertyType);
-            targetProperty.SetValue(mappedTarget, convertedValue);
+            if (originalProperty.PropertyType == targetProperty.PropertyType)
+            {
+                targetProperty.SetValue(mappedTarget, value);
+                return;
+            }
+
+            var converter = TypeDescriptor.GetConverter(originalProperty.PropertyType);
+            if (converter.CanConvertTo(targetProperty.PropertyType))
+            {
+                var convertedValue = converter.ConvertTo(value, targetProperty.PropertyType);
+                targetProperty.SetValue(mappedTarget, convertedValue);
+            }
         }
     }
 
