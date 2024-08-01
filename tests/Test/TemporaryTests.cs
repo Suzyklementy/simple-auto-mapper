@@ -158,4 +158,23 @@ public class TemporaryTests
 
         Console.WriteLine($"Description: {exampleDto.Description}");
     }
+
+    [Fact]
+    public void test_advance_auto_mapper_configuration()
+    {
+        var example = new Example()
+        {
+            Id = 1,
+            Name = "Test",
+            Description = "Test Description",
+            SecureData = "Secured Data",
+            Test = new TestValueObject("XDDD"),
+            TestArray = [new TestValueObject("XDDD")]
+        };
+
+        AutoMapperConfiguration<Example, ExampleDto>.ConfigureMap(x => x.TestArray, x => null);
+        var exampleDto = AutoMapperService.Map<Example, ExampleDto>(example);
+
+        _testOutputHelper.WriteLine($"Name: {exampleDto.Name}");
+    }
 }

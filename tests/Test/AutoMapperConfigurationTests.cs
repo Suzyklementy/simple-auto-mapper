@@ -55,13 +55,4 @@ public class AutoMapperConfigurationTests
         Assert.NotNull(dto);
         Assert.Single(AutoMapperConfiguration<Example, ExampleDto>.Maps.Where(x => x.PropertyName == "Name"));
     }
-
-    [Fact]
-    public void configure_map_with_not_matching_value_types_should_fail()
-    {
-        var exception = Record.Exception(() => AutoMapperConfiguration<Example, ExampleDto>.ConfigureMap(x => x.Id, x => "string"));
-
-        Assert.IsType<AutoMapperConfigurationException>(exception);
-        Assert.Contains("Cannot configure map for those object cause type of target property does not match or is not convertable to input type", exception.Message);
-    }
 }

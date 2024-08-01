@@ -8,4 +8,5 @@ public class ExampleDto
     public string Name { get; set; }
     public string Description { get; set; }
     public TestValueObject Test { get; set; }
+    public string[] TestArray { get; set; }
 }

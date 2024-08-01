@@ -33,6 +33,7 @@ public static class AutoMapperService
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
                         MapProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
+                        break;
                     }
                 }
                 catch(Exception e)
@@ -67,6 +68,7 @@ public static class AutoMapperService
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
                         MapProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
+                        break;
                     }
                 }
                 catch
@@ -105,6 +107,7 @@ public static class AutoMapperService
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
                         MapValueObjectProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
+                        break;
                     }
                 }
                 catch (Exception e)
@@ -139,6 +142,7 @@ public static class AutoMapperService
                     if (originalProperty.Name.ToLower() == targetProperty.Name.ToLower())
                     {
                         MapValueObjectProperty(originalProperty, targetProperty, originalProperty.GetValue(originalObject), ref mappedTarget);
+                        break;
                     }
                 }
                 catch

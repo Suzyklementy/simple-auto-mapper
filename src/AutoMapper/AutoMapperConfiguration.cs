@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Exceptions;
+using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -11,53 +12,8 @@ public static class AutoMapperConfiguration<TOriginal, TTarget>
 {
     internal static List<Map<TOriginal>> Maps { get; private set; } = new();
 
-    public static void ConfigureMap(Expression<Func<TTarget, object>> targetExpression, Expression<Func<TOriginal, object>> valueResolverExpression)
-    {
-        var targetProperty = GetProperty(targetExpression) 
-            ?? throw new AutoMapperConfigurationException(typeof(TOriginal), typeof(TTarget), "Cannot match mapping property with target type");
-        var originalProperty = GetProperty(valueResolverExpression);
-        var valueResolver = valueResolverExpression.Compile();
 
-        try
-        {
-            DeleteMap(targetExpression);
-        } 
-        catch { }
-
-        Type resolvedValueType;
-        if (originalProperty is null)
-        {
-            resolvedValueType = valueResolver(new TOriginal()).GetType();
-        }
-        else
-        {
-            resolvedValueType = originalProperty.PropertyType;
-        }
-
-        Type targetType = targetProperty.PropertyType;
-        var converter = TypeDescriptor.GetConverter(resolvedValueType);
-
-        if (targetType == resolvedValueType)
-        {
-            var map = new Map<TOriginal>(targetProperty.Name, valueResolver);
-            Maps.Add(map);
-        }
-        else if (converter.CanConvertTo(targetType)) 
-        {
-            Func<TOriginal, object> convertedFunc = obj => 
-            { 
-                return converter.ConvertTo(valueResolver(obj), targetType) ?? new object();  
-            };
-
-            var map = new Map<TOriginal>(targetProperty.Name, convertedFunc);
-            Maps.Add(map);
-        }
-        else
-        {
-            throw new AutoMapperConfigurationException(typeof(TOriginal), typeof(TTarget), "Cannot configure map for those object cause type of target property does not match or is not convertable to input type");
-        }
-    }
-    public static void DeleteMap(Expression<Func<TTarget, object>> targetExpression)
+    public static void DeleteMap<T>(Expression<Func<TTarget, T>> targetExpression)
     {
         var targetProperty = GetProperty(targetExpression) 
             ?? throw new AutoMapperConfigurationException(typeof(TOriginal), typeof(TTarget), "Invalid expression");
@@ -68,7 +24,29 @@ public static class AutoMapperConfiguration<TOriginal, TTarget>
         Maps.Remove(map);
     }
 
-    private static PropertyInfo? GetProperty<T>(Expression<Func<T, object>> expression)
+    public static void ConfigureMap<T>(Expression<Func<TTarget, T>> targetExpression, Expression<Func<TOriginal, T>> valueResolverExpression)
+    {
+        var targetProperty = GetProperty(targetExpression)
+            ?? throw new AutoMapperConfigurationException(typeof(TOriginal), typeof(TTarget), "Cannot match mapping property with target type");
+        var valueResolver = valueResolverExpression.Compile();
+
+        try
+        {
+            DeleteMap(targetExpression);
+        }
+        catch { }
+
+        Func<TOriginal, object?> convertedFunc = obj =>
+        {
+            return valueResolver(obj);
+        };
+
+        var map = new Map<TOriginal>(targetProperty.Name, convertedFunc);
+        Maps.Add(map);
+       
+    }
+
+    private static PropertyInfo? GetProperty<TIn, TOut>(Expression<Func<TIn, TOut>> expression)
     {
         var memberExpression = expression.Body as MemberExpression ?? (expression.Body as UnaryExpression)?.Operand as MemberExpression;
 
@@ -78,12 +56,6 @@ public static class AutoMapperConfiguration<TOriginal, TTarget>
         }
 
         if (memberExpression.Member is not PropertyInfo property)
-        {
-            return default;
-        }
-
-        var properties = typeof(T).GetProperties();
-        if(!properties.Contains(property))
         {
             return default;
         }

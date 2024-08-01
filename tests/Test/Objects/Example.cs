@@ -9,4 +9,5 @@ public class Example
     public string Description { get; set; }
     public string SecureData { get; set; }
     public TestValueObject Test { get; set; }
+    public List<TestValueObject> TestArray { get; set; }
 }

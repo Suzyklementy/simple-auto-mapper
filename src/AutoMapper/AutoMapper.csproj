@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	<Nullable>enable</Nullable>
     <Title>Simple AutoMapper</Title>
     <Description>Simple classes AutoMapper which does not require any configuration to use</Description>
     <PackageProjectUrl></PackageProjectUrl>
     <PackageId>SimpleAutoMapperSuzyklementy</PackageId>
-    <Version>1.2.1</Version>
+    <Version>1.3.0</Version>
     <RepositoryUrl>https://github.com/Suzyklementy/simple-auto-mapper</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
@@ -27,7 +27,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\README.md">
+    <None Include="bin\Debug\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
